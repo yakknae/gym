@@ -13,7 +13,7 @@ export const planService = {
   // =================================================================
   // 1. get all
   // =================================================================
-  async getall() {
+  async getAll() {
     return await db.planes.findMany({
       orderBy: { id_plan: "asc" },
     });

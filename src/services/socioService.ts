@@ -34,7 +34,7 @@ export const socioService = {
   // 3. create
   // =================================================================
   async create(data: any) {
-    return await db.$transaction(async (tx) => {
+    return await db.$transaction(async (tx: Prisma.TransactionClient) => {
       // 1. Validar que el plan exista
       const plan = await tx.planes.findUnique({ where: { id_plan: parseInt(data.id_plan) } });
       if (!plan) throw new Error(`El plan con ID ${data.id_plan} no existe.`);
@@ -89,7 +89,7 @@ export const socioService = {
   // 4. update
   // =================================================================
   async update(id: number, data: any, actualizarFechaPago: boolean) {
-    return await db.$transaction(async (tx) => {
+    return await db.$transaction(async (tx: Prisma.TransactionClient) => {
       // A. Actualización de datos básicos
       const socioUpdate = await tx.socios.update({
         where: { id_socio: id },
@@ -128,7 +128,7 @@ export const socioService = {
   // 5. DELETE
   // =================================================================
   async delete(id: number) {
-    return await db.$transaction(async (tx) => {
+    return await db.$transaction(async (tx: Prisma.TransactionClient) => {
       await tx.pagos.deleteMany({
         where: { id_socio: id },
       });

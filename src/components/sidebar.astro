@@ -1,0 +1,275 @@
+---
+// src/components/Sidebar.astro
+const currentPath = Astro.url.pathname;
+---
+
+<aside
+  class="w-72 bg-[#0f0f0f] text-white flex flex-col h-screen overflow-y-auto border-r border-orange-500/30 shadow-2xl"
+>
+  <!-- Header -->
+  <div class="p-6 border-b border-orange-500/30">
+    <div class="flex items-center gap-3 mb-2">
+      <div
+        class="w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-lg"
+      >
+        A
+      </div>
+      <div>
+        <h1 class="text-xl font-bold text-orange-500 tracking-tight">ATENAS GYM</h1>
+        <p class="text-xs text-gray-500">Sistema de Gestión</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="flex-1 px-3 py-6 space-y-1">
+    <!-- Dashboard -->
+    <a
+      href="/dashboard"
+      class={`group flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-orange-500/10 transition-all duration-200 ${
+        currentPath === "/dashboard"
+          ? "bg-orange-500/20 text-orange-500 border border-orange-500/50"
+          : "text-gray-300 hover:text-white"
+      }`}
+    >
+      <span class="text-xl">📊</span>
+      <span class="font-medium">Dashboard</span>
+    </a>
+
+    <!-- Socios (con sub-menú) -->
+    <div class="menu-item">
+      <button
+        class={`group flex items-center justify-between w-full px-4 py-3 rounded-xl hover:bg-orange-500/10 transition-all duration-200 ${
+          currentPath.startsWith("/socios")
+            ? "bg-orange-500/20 text-orange-500 border border-orange-500/50"
+            : "text-gray-300 hover:text-white"
+        }`}
+        data-menu="socios"
+      >
+        <span class="flex items-center gap-3">
+          <span class="text-xl">👥</span>
+          <span class="font-medium">Socios</span>
+        </span>
+        <span class="chevron transition-transform duration-300 text-xs">▼</span>
+      </button>
+      <div class="submenu hidden pl-12 pr-3 mt-1 space-y-1">
+        <a
+          href="/socios"
+          class={`block px-4 py-2.5 rounded-lg hover:bg-orange-500/10 transition-all text-sm ${
+            currentPath === "/socios"
+              ? "bg-orange-500/20 text-orange-500 font-medium"
+              : "text-gray-400 hover:text-white"
+          }`}
+        >
+          <span class="mr-2">📋</span>Ver Planilla
+        </a>
+        <a
+          href="/socios/create"
+          class={`block px-4 py-2.5 rounded-lg hover:bg-orange-500/10 transition-all text-sm ${
+            currentPath === "/socios/create"
+              ? "bg-orange-500/20 text-orange-500 font-medium"
+              : "text-gray-400 hover:text-white"
+          }`}
+        >
+          <span class="mr-2">➕</span>Crear Socio
+        </a>
+      </div>
+    </div>
+
+    <!-- Pagos (con sub-menú) -->
+    <div class="menu-item">
+      <button
+        class={`group flex items-center justify-between w-full px-4 py-3 rounded-xl hover:bg-orange-500/10 transition-all duration-200 ${
+          currentPath.startsWith("/pagos")
+            ? "bg-orange-500/20 text-orange-500 border border-orange-500/50"
+            : "text-gray-300 hover:text-white"
+        }`}
+        data-menu="pagos"
+      >
+        <span class="flex items-center gap-3">
+          <span class="text-xl">💰</span>
+          <span class="font-medium">Cobros y Pagos</span>
+        </span>
+        <span class="chevron transition-transform duration-300 text-xs">▼</span>
+      </button>
+      <div class="submenu hidden pl-12 pr-3 mt-1 space-y-1">
+        <a
+          href="/pagos"
+          class={`block px-4 py-2.5 rounded-lg hover:bg-orange-500/10 transition-all text-sm ${
+            currentPath === "/pagos" ? "bg-orange-500/20 text-orange-500 font-medium" : "text-gray-400 hover:text-white"
+          }`}
+        >
+          <span class="mr-2">📋</span>Ver Pagos
+        </a>
+        <a
+          href="/pagos/pendientes"
+          class={`block px-4 py-2.5 rounded-lg hover:bg-orange-500/10 transition-all text-sm ${
+            currentPath === "/pagos/pendientes"
+              ? "bg-orange-500/20 text-orange-500 font-medium"
+              : "text-gray-400 hover:text-white"
+          }`}
+        >
+          <span class="mr-2">⏰</span>Pendientes
+        </a>
+        <a
+          href="/pagos/historial"
+          class={`block px-4 py-2.5 rounded-lg hover:bg-orange-500/10 transition-all text-sm ${
+            currentPath === "/pagos/historial"
+              ? "bg-orange-500/20 text-orange-500 font-medium"
+              : "text-gray-400 hover:text-white"
+          }`}
+        >
+          <span class="mr-2">📊</span>Historial
+        </a>
+      </div>
+    </div>
+
+    <!-- Asistencias (con sub-menú) -->
+    <div class="menu-item">
+      <button
+        class={`group flex items-center justify-between w-full px-4 py-3 rounded-xl hover:bg-orange-500/10 transition-all duration-200 ${
+          currentPath.startsWith("/asistencias")
+            ? "bg-orange-500/20 text-orange-500 border border-orange-500/50"
+            : "text-gray-300 hover:text-white"
+        }`}
+        data-menu="asistencias"
+      >
+        <span class="flex items-center gap-3">
+          <span class="text-xl">⏱️</span>
+          <span class="font-medium">Asistencias</span>
+        </span>
+        <span class="chevron transition-transform duration-300 text-xs">▼</span>
+      </button>
+      <div class="submenu hidden pl-12 pr-3 mt-1 space-y-1">
+        <a
+          href="/asistencias"
+          class={`block px-4 py-2.5 rounded-lg hover:bg-orange-500/10 transition-all text-sm ${
+            currentPath === "/asistencias"
+              ? "bg-orange-500/20 text-orange-500 font-medium"
+              : "text-gray-400 hover:text-white"
+          }`}
+        >
+          <span class="mr-2">📋</span>Ver Registros
+        </a>
+        <a
+          href="/asistencias/registrar"
+          class={`block px-4 py-2.5 rounded-lg hover:bg-orange-500/10 transition-all text-sm ${
+            currentPath === "/asistencias/registrar"
+              ? "bg-orange-500/20 text-orange-500 font-medium"
+              : "text-gray-400 hover:text-white"
+          }`}
+        >
+          <span class="mr-2">✅</span>Registrar Entrada
+        </a>
+      </div>
+    </div>
+
+    <!-- Divisor -->
+    <div class="py-3">
+      <div class="h-px bg-gradient-to-r from-transparent via-orange-500/50 to-transparent"></div>
+    </div>
+
+    <!-- Configuración (con sub-menú) -->
+    <div class="menu-item">
+      <button
+        class={`group flex items-center justify-between w-full px-4 py-3 rounded-xl hover:bg-orange-500/10 transition-all duration-200 ${
+          currentPath.startsWith("/planes") || currentPath.startsWith("/obra-sociales")
+            ? "bg-orange-500/20 text-orange-500 border border-orange-500/50"
+            : "text-gray-300 hover:text-white"
+        }`}
+        data-menu="configuracion"
+      >
+        <span class="flex items-center gap-3">
+          <span class="text-xl">⚙️</span>
+          <span class="font-medium">Configuración</span>
+        </span>
+        <span class="chevron transition-transform duration-300 text-xs">▼</span>
+      </button>
+      <div class="submenu hidden pl-12 pr-3 mt-1 space-y-1">
+        <a
+          href="/planes"
+          class={`block px-4 py-2.5 rounded-lg hover:bg-orange-500/10 transition-all text-sm ${
+            currentPath === "/planes"
+              ? "bg-orange-500/20 text-orange-500 font-medium"
+              : "text-gray-400 hover:text-white"
+          }`}
+        >
+          <span class="mr-2">💳</span>Planes
+        </a>
+        <a
+          href="/obra-sociales"
+          class={`block px-4 py-2.5 rounded-lg hover:bg-orange-500/10 transition-all text-sm ${
+            currentPath === "/obra-sociales"
+              ? "bg-orange-500/20 text-orange-500 font-medium"
+              : "text-gray-400 hover:text-white"
+          }`}
+        >
+          <span class="mr-2">🏥</span>Obras Sociales
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Footer -->
+  <div class="p-4 border-t border-orange-500/30">
+    <div class="flex items-center justify-between px-2">
+      <div class="flex items-center gap-2">
+        <div
+          class="w-8 h-8 bg-gradient-to-br from-orange-500 to-orange-600 rounded-lg flex items-center justify-center text-white text-sm font-bold shadow"
+        >
+          V
+        </div>
+        <div class="text-xs">
+          <p class="text-white font-medium">Valentín</p>
+          <p class="text-gray-500 text-[10px]">Administrador</p>
+        </div>
+      </div>
+      <button class="text-gray-500 hover:text-orange-500 transition-colors" title="Cerrar sesión">
+        <span class="text-lg">🚪</span>
+      </button>
+    </div>
+    <p class="text-[10px] text-gray-600 text-center mt-3">v2.0 - Astro Edition</p>
+  </div>
+</aside>
+
+<script>
+  document.addEventListener("DOMContentLoaded", () => {
+    const menuButtons = document.querySelectorAll("[data-menu]");
+
+    menuButtons.forEach((button) => {
+      const menuItem = button.closest(".menu-item");
+      const submenu = menuItem?.querySelector(".submenu");
+      const chevron = button.querySelector(".chevron");
+
+      const currentPath = window.location.pathname;
+      const menuName = button.getAttribute("data-menu");
+
+      if (
+        currentPath.startsWith(`/${menuName}`) ||
+        (menuName === "configuracion" &&
+          (currentPath.startsWith("/planes") || currentPath.startsWith("/obra-sociales")))
+      ) {
+        submenu?.classList.remove("hidden");
+        chevron?.classList.add("rotate-180");
+      }
+
+      button.addEventListener("click", (e) => {
+        e.preventDefault();
+
+        document.querySelectorAll(".submenu").forEach((menu) => {
+          if (menu !== submenu) {
+            menu.classList.add("hidden");
+          }
+        });
+        document.querySelectorAll(".chevron").forEach((chev) => {
+          if (chev !== chevron) {
+            chev.classList.remove("rotate-180");
+          }
+        });
+
+        submenu?.classList.toggle("hidden");
+        chevron?.classList.toggle("rotate-180");
+      });
+    });
+  });
+</script>

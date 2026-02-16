@@ -1,9 +1,11 @@
 generator client {
   provider = "prisma-client-js"
+  engineType = "binary"
 }
 
 datasource db {
   provider = "mysql"
+  url = "mysql://root:1234@localhost:3306/atenas"
 }
 
 model asistencias {

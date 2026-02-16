@@ -4,7 +4,7 @@ import { error } from "node:console";
 
 export const GET: APIRoute = async () => {
   try {
-    const planes = await planService.getall();
+    const planes = await planService.getAll();
     return new Response(JSON.stringify(planes), { status: 200, headers: { "Content-Type": "application/json" } });
   } catch (e: any) {
     return new Response(JSON.stringify({ error: e.message }), { status: 500 });
