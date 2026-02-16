@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+}
+
+model asistencias {
+  id       Int      @id @default(autoincrement())
+  socio_id Int
+  fecha    DateTime @db.Date
+  hora     DateTime @db.Time(0)
+  socios   socios   @relation(fields: [socio_id], references: [id_socio], onUpdate: Restrict, map: "asistencias_ibfk_1")
+
+  @@index([socio_id], map: "socio_id")
+}
+
+model login {
+  id       Int     @id @default(autoincrement())
+  name     String  @unique(map: "name") @db.VarChar(50)
+  password String? @db.VarChar(50)
+}
+
+model pagos {
+  id_pago             Int       @id @default(autoincrement())
+  id_socio            Int
+  id_plan             Int
+  fecha_programada    DateTime  @db.Date
+  fecha_pago          DateTime? @db.Date
+  estado_pago         String?   @default("Pendiente") @db.VarChar(50)
+  mes_correspondiente DateTime  @db.Date
+  socios              socios    @relation(fields: [id_socio], references: [id_socio], onUpdate: Restrict, map: "pagos_ibfk_1")
+  planes              planes    @relation(fields: [id_plan], references: [id_plan], onUpdate: Restrict, map: "pagos_ibfk_2")
+
+  @@index([id_plan], map: "id_plan")
+  @@index([id_socio], map: "id_socio")
+}
+
+model planes {
+  id_plan     Int      @id @default(autoincrement())
+  nombre_plan String   @db.VarChar(100)
+  dias        Int
+  descripcion String?  @db.Text
+  precio      Int
+  pagos       pagos[]
+  socios      socios[]
+}
+
+model planes_sociales {
+  id_plan_social     Int      @id @default(autoincrement())
+  nombre_plan_social String   @db.VarChar(100)
+  socios             socios[]
+}
+
+model socios {
+  id_socio         Int              @id @default(autoincrement())
+  nombre           String           @db.VarChar(100)
+  apellido         String           @db.VarChar(100)
+  dni              Int              @unique(map: "dni")
+  fecha_nacimiento DateTime?        @db.Date
+  genero           String?          @db.VarChar(50)
+  email            String?          @db.VarChar(150)
+  telefono         String?          @db.VarChar(20)
+  direccion        String?          @db.VarChar(255)
+  id_plan          Int?
+  id_plan_social   Int?
+  estado           String           @default("Activo") @db.VarChar(20)
+  fecha_ingreso    DateTime         @db.Date
+  asistencias      asistencias[]
+  pagos            pagos[]
+  planes           planes?          @relation(fields: [id_plan], references: [id_plan], onDelete: Restrict, onUpdate: Restrict, map: "socios_ibfk_1")
+  planes_sociales  planes_sociales? @relation(fields: [id_plan_social], references: [id_plan_social], onDelete: Restrict, onUpdate: Restrict, map: "socios_ibfk_2")
+
+  @@index([id_plan], map: "id_plan")
+  @@index([id_plan_social], map: "id_plan_social")
+}
