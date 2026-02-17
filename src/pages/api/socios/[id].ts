@@ -1,7 +1,5 @@
 import type { APIRoute } from "astro";
 import { socioService } from "../../../services/socioService";
-import { Param } from "@prisma/client/runtime/client";
-import { stat } from "node:fs";
 
 export const GET: APIRoute = async ({ params }) => {
   const socio = await socioService.getById(Number(params.id));

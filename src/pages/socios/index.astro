@@ -6,12 +6,7 @@ const socios = await socioService.getAll();
 ---
 
 <Layout title="Listado de Socios">
-  <div class="flex justify-between items-center mb-6">
-    <div>
-      <h1 class="text-3xl font-bold text-white">Socios</h1>
-      <p class="text-gray-400">Gestioná los miembros de Atenas Gym</p>
-    </div>
-
+  <div class="flex justify-end items-center mb-6">
     <a
       href="/socios/nuevo"
       class="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-3 px-6 rounded-lg transition-all shadow-lg shadow-orange-500/50 flex items-center gap-2"
@@ -24,54 +19,99 @@ const socios = await socioService.getAll();
     <table class="w-full text-left border-collapse">
       <thead class="bg-[#0f0f0f] border-b border-orange-500/30">
         <tr>
-          <th class="px-6 py-4 text-sm font-semibold text-orange-500">Socio</th>
-          <th class="px-6 py-4 text-sm font-semibold text-orange-500">DNI</th>
-          <th class="px-6 py-4 text-sm font-semibold text-orange-500">Plan</th>
-          <th class="px-6 py-4 text-sm font-semibold text-orange-500">Estado</th>
-          <th class="px-6 py-4 text-sm font-semibold text-orange-500 text-right">Acciones</th>
+          <th class="px-6 py-4 text-sm font-semibold text-orange-500 tracking-wider text-center">Socio</th>
+          <th class="px-6 py-4 text-sm font-semibold text-orange-500 tracking-wider text-center">Telefono</th>
+          <th class="px-6 py-4 text-sm font-semibold text-orange-500 tracking-wider text-center">DNI</th>
+          <th class="px-6 py-4 text-sm font-semibold text-orange-500 tracking-wider text-center">Plan</th>
+          <th class="px-6 py-4 text-sm font-semibold text-orange-500 tracking-wider text-center">Plan Social</th>
+          <th class="px-6 py-4 text-sm font-semibold text-orange-500 tracking-wider text-center">Estado</th>
+          <th class="px-6 py-4 text-sm font-semibold text-orange-500 tracking-wider text-center">Acciones</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-orange-500/10">
         {
           socios.map((socio) => (
             <tr class="hover:bg-orange-500/5 transition-colors">
-              <td class="px-6 py-4">
-                <div class="font-medium text-white">
+              <td class="px-6 py-4 ">
+                <div class="font-medium text-white text-center">
                   {socio.nombre} {socio.apellido}
                 </div>
-                <div class="text-xs text-gray-500">{socio.email || "Sin email"}</div>
+                <div class="text-xs text-gray-500 text-center">{socio.email || "Sin email"}</div>
               </td>
-              <td class="px-6 py-4 text-sm text-gray-300">{socio.dni}</td>
-              <td class="px-6 py-4">
+              <td class="px-6 py-4 text-sm text-white text-center">
+                <span>{socio.telefono}</span>
+              </td>
+              <td class="px-6 py-4 text-sm text-white text-center">{socio.dni}</td>
+              <td class="px-6 py-4 text-center">
                 <span class="text-xs font-medium px-3 py-1 rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30">
                   {socio.planes?.nombre_plan || "Sin Plan"}
                 </span>
               </td>
-              <td class="px-6 py-4">
+              <td class="px-6 py-4 text-center">
+                <span class="text-xs font-medium px-3 py-1 rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30">
+                  {socio.planes_sociales?.nombre_plan_social || "Sin Plan"}
+                </span>
+              </td>
+              <td class="px-6 py-4 text-center">
                 <span
                   class={`text-xs font-medium px-3 py-1 rounded-full ${
                     socio.estado === "Activo"
                       ? "bg-green-500/20 text-green-400 border border-green-500/30"
-                      : "bg-red-500/20 text-red-400 border border-red-500/30"
+                      : "bg-red-500/20 text-red-400 border border-red-500/30 "
                   }`}
                 >
                   {socio.estado}
                 </span>
               </td>
-              <td class="px-6 py-4 text-right">
-                <div class="flex justify-end gap-2">
+              <td class="px-6 py-4 text-center">
+                <div class="flex justify-center gap-2">
                   <a
                     href={`/socios/${socio.id_socio}`}
                     class="p-2 hover:bg-orange-500/20 rounded-md transition-colors border border-transparent hover:border-orange-500/50"
                     title="Ver ficha"
                   >
-                    👁️
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="icon icon-tabler icons-tabler-outline icon-tabler-user-edit"
+                    >
+                      <>
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+                        <path d="M6 21v-2a4 4 0 0 1 4 -4h3.5" />
+                        <path d="M18.42 15.61a2.1 2.1 0 0 1 2.97 2.97l-3.39 3.42h-3v-3l3.42 -3.39" />
+                      </>
+                    </svg>
                   </a>
                   <button
                     class="p-2 hover:bg-red-500/20 text-red-400 rounded-md transition-colors border border-transparent hover:border-red-500/50 btn-eliminar"
                     data-id={socio.id_socio}
                   >
-                    🗑️
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="icon icon-tabler icons-tabler-outline icon-tabler-square-x"
+                    >
+                      <>
+                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                        <path d="M3 5a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-14" />
+                        <path d="M9 9l6 6m0 -6l-6 6" />
+                      </>
+                    </svg>
                   </button>
                 </div>
               </td>
