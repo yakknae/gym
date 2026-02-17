@@ -3,6 +3,7 @@ import type { Prisma } from "@prisma/client";
 
 export type obraSocialInput = {
   nombre_plan_social: string;
+  categoria: string;
 };
 
 export const obraSocialService = {
@@ -21,13 +22,14 @@ export const obraSocialService = {
     return await db.planes_sociales.create({
       data: {
         nombre_plan_social: data.nombre_plan_social,
+        categoria: data.categoria,
       },
     });
   },
   async update(id: number, data: Partial<obraSocialInput>) {
     return await db.planes_sociales.update({
       where: { id_plan_social: id },
-      data: { nombre_plan_social: data.nombre_plan_social },
+      data: { nombre_plan_social: data.nombre_plan_social, categoria: data.categoria },
     });
   },
   async delete(id: number) {

@@ -1,17 +1,17 @@
 ---
 import Layout from "../../../src/layouts/Layout.astro";
-import { socioService } from "../../../src/services/socioService";
+import { planService } from "../../../src/services/planService";
 
-const socios = await socioService.getAll();
+const planes = await planService.getAll();
 ---
 
-<Layout title="Listado de Socios">
+<Layout title="Listado de planes">
   <div class="flex justify-end items-center mb-6">
     <a
-      href="/socios/create"
+      href="/planes/create"
       class="bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-bold py-3 px-6 rounded-lg transition-all shadow-lg shadow-orange-500/50 flex items-center gap-2"
     >
-      <span class="text-xl">+</span> Nuevo Socio
+      <span class="text-xl">+</span> Nuevo plan
     </a>
   </div>
 
@@ -19,54 +19,33 @@ const socios = await socioService.getAll();
     <table class="w-full text-left border-collapse">
       <thead class="bg-[#0f0f0f] border-b border-orange-500/30">
         <tr>
-          <th class="px-6 py-4 text-sm font-semibold text-orange-500 tracking-wider text-center">Socio</th>
-          <th class="px-6 py-4 text-sm font-semibold text-orange-500 tracking-wider text-center">Telefono</th>
-          <th class="px-6 py-4 text-sm font-semibold text-orange-500 tracking-wider text-center">DNI</th>
-          <th class="px-6 py-4 text-sm font-semibold text-orange-500 tracking-wider text-center">Plan</th>
-          <th class="px-6 py-4 text-sm font-semibold text-orange-500 tracking-wider text-center">Plan Social</th>
-          <th class="px-6 py-4 text-sm font-semibold text-orange-500 tracking-wider text-center">Estado</th>
+          <th class="px-6 py-4 text-sm font-semibold text-orange-500 tracking-wider text-center">Nombre</th>
+          <th class="px-6 py-4 text-sm font-semibold text-orange-500 tracking-wider text-center">Días</th>
+          <th class="px-6 py-4 text-sm font-semibold text-orange-500 tracking-wider text-center">Descripción</th>
+          <th class="px-6 py-4 text-sm font-semibold text-orange-500 tracking-wider text-center">Precio</th>
           <th class="px-6 py-4 text-sm font-semibold text-orange-500 tracking-wider text-center">Acciones</th>
         </tr>
       </thead>
       <tbody class="divide-y divide-orange-500/10">
         {
-          socios.map((socio) => (
+          planes.map((planes) => (
             <tr class="hover:bg-orange-500/5 transition-colors">
-              <td class="px-6 py-4 ">
-                <div class="font-medium text-white text-center">
-                  {socio.nombre} {socio.apellido}
-                </div>
-                <div class="text-xs text-gray-500 text-center">{socio.email || "Sin email"}</div>
+              <td class="px-6 py-4 text-white text-center">
+                <span>{planes.nombre_plan}</span>
               </td>
               <td class="px-6 py-4 text-sm text-white text-center">
-                <span>{socio.telefono}</span>
+                <span>{planes.dias}</span>
               </td>
-              <td class="px-6 py-4 text-sm text-white text-center">{socio.dni}</td>
+              <td class="px-6 py-4 text-sm text-white text-center">{planes.descripcion}</td>
               <td class="px-6 py-4 text-center">
                 <span class="text-xs font-medium px-3 py-1 rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30">
-                  {socio.planes?.nombre_plan || "Sin Plan"}
-                </span>
-              </td>
-              <td class="px-6 py-4 text-center">
-                <span class="text-xs font-medium px-3 py-1 rounded-full bg-orange-500/20 text-orange-400 border border-orange-500/30">
-                  {socio.planes_sociales?.nombre_plan_social || "Sin Plan"}
-                </span>
-              </td>
-              <td class="px-6 py-4 text-center">
-                <span
-                  class={`text-xs font-medium px-3 py-1 rounded-full ${
-                    socio.estado === "Activo"
-                      ? "bg-green-500/20 text-green-400 border border-green-500/30"
-                      : "bg-red-500/20 text-red-400 border border-red-500/30 "
-                  }`}
-                >
-                  {socio.estado}
+                  {planes.precio}
                 </span>
               </td>
               <td class="px-6 py-4 text-center">
                 <div class="flex justify-center gap-2">
                   <a
-                    href={`/socios/${socio.id_socio}`}
+                    href={`/socios/${planes.id_plan}`}
                     class="p-2 hover:bg-orange-500/20 rounded-md transition-colors border border-transparent hover:border-orange-500/50"
                     title="Ver ficha"
                   >
@@ -92,7 +71,7 @@ const socios = await socioService.getAll();
                   </a>
                   <button
                     class="p-2 hover:bg-red-500/20 text-red-400 rounded-md transition-colors border border-transparent hover:border-red-500/50 btn-eliminar"
-                    data-id={socio.id_socio}
+                    data-id={planes.id_plan}
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -128,8 +107,8 @@ const socios = await socioService.getAll();
   botonesEliminar.forEach((boton) => {
     boton.addEventListener("click", async () => {
       const id = boton.getAttribute("data-id");
-      if (confirm("¿Seguro que querés eliminar este socio?")) {
-        await fetch(`/api/socios/${id}`, { method: "DELETE" });
+      if (confirm("¿Seguro que querés eliminar este plan?")) {
+        await fetch(`/api/planes/${id}`, { method: "DELETE" });
         location.reload();
       }
     });

@@ -1,11 +1,11 @@
 generator client {
-  provider = "prisma-client-js"
+  provider   = "prisma-client-js"
   engineType = "binary"
 }
 
 datasource db {
   provider = "mysql"
-  url = "mysql://root:1234@localhost:3306/atenas"
+  url      = "mysql://root:1234@localhost:3306/atenas"
 }
 
 model asistencias {
@@ -52,6 +52,7 @@ model planes {
 model planes_sociales {
   id_plan_social     Int      @id @default(autoincrement())
   nombre_plan_social String   @db.VarChar(100)
+  categoria          String   @db.VarChar(100)
   socios             socios[]
 }
 

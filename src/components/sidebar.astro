@@ -144,7 +144,191 @@ const currentPath = Astro.url.pathname;
         </a>
       </div>
     </div>
+    <!-- planes (con sub-menú) -->
+    <div class="menu-item">
+      <button
+        class={`group flex items-center justify-between w-full px-4 py-3 rounded-xl hover:bg-orange-500/10 transition-all duration-200 ${
+          currentPath.startsWith("/planes")
+            ? "bg-orange-500/20 text-orange-500 border border-orange-500/50"
+            : "text-gray-300 hover:text-white"
+        }`}
+        data-menu="planes"
+      >
+        <span class="flex items-center gap-3">
+          <span class="text-xl"
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-barbell"
+              ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M2 12h1"></path><path
+                d="M6 8h-2a1 1 0 0 0 -1 1v6a1 1 0 0 0 1 1h2"></path><path
+                d="M6 7v10a1 1 0 0 0 1 1h1a1 1 0 0 0 1 -1v-10a1 1 0 0 0 -1 -1h-1a1 1 0 0 0 -1 1"></path><path
+                d="M9 12h6"></path><path
+                d="M15 7v10a1 1 0 0 0 1 1h1a1 1 0 0 0 1 -1v-10a1 1 0 0 0 -1 -1h-1a1 1 0 0 0 -1 1"></path><path
+                d="M18 8h2a1 1 0 0 1 1 1v6a1 1 0 0 1 -1 1h-2"></path><path d="M22 12h-1"></path></svg
+            ></span
+          >
+          <span class="font-medium">Planes</span>
+        </span>
+        <span class="chevron transition-transform duration-300 text-xs">▼</span>
+      </button>
+      <div class="submenu hidden pl-12 pr-3 mt-1 space-y-1">
+        <a
+          href="/planes"
+          class={`block px-4 py-2.5 rounded-lg hover:bg-orange-500/10 transition-all text-sm ${
+            currentPath === "/planes"
+              ? "bg-orange-500/20 text-orange-500 font-medium"
+              : "text-gray-400 hover:text-white"
+          }`}
+        >
+          <div class="flex items-center">
+            <span class="mr-2"
+              ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="icon icon-tabler icons-tabler-outline icon-tabler-align-box-center-top"
+                ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
+                  d="M3 19v-14a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2"></path><path
+                  d="M11 13h2"></path><path d="M9 10h6"></path><path d="M10 7h4"></path></svg
+              ></span
+            >Ver Planilla
+          </div>
+        </a>
+        <a
+          href="/planes/create"
+          class={`block px-4 py-2.5 rounded-lg hover:bg-orange-500/10 transition-all text-sm ${
+            currentPath === "/asistencias/registrar"
+              ? "bg-orange-500/20 text-orange-500 font-medium"
+              : "text-gray-400 hover:text-white"
+          }`}
+        >
+          <div class="flex items-center">
+            <span class="mr-2"
+              ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="icon icon-tabler icons-tabler-outline icon-tabler-plus"
+                ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 5l0 14"></path><path
+                  d="M5 12l14 0"></path></svg
+              ></span
+            >Crear Plan
+          </div>
+        </a>
+      </div>
+    </div>
 
+    <!-- obra sociales (con sub-menú) -->
+    <div class="menu-item">
+      <button
+        class={`group flex items-center justify-between w-full px-4 py-3 rounded-xl hover:bg-orange-500/10 transition-all duration-200 ${
+          currentPath.startsWith("/obra_sociales")
+            ? "bg-orange-500/20 text-orange-500 border border-orange-500/50"
+            : "text-gray-300 hover:text-white"
+        }`}
+        data-menu="obra_sociales"
+      >
+        <span class="flex items-center gap-3">
+          <span class="text-xl"
+            ><svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-building-hospital"
+              ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M3 21l18 0"></path><path
+                d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16"></path><path
+                d="M9 21v-4a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v4"></path><path d="M10 9l4 0"></path><path d="M12 7l0 4"
+              ></path></svg
+            ></span
+          >
+          <span class="font-medium">Obra Sociales</span>
+        </span>
+        <span class="chevron transition-transform duration-300 text-xs">▼</span>
+      </button>
+      <div class="submenu hidden pl-12 pr-3 mt-1 space-y-1">
+        <a
+          href="/obra_sociales"
+          class={`block px-4 py-2.5 rounded-lg hover:bg-orange-500/10 transition-all text-sm ${
+            currentPath === "/obra_sociales"
+              ? "bg-orange-500/20 text-orange-500 font-medium"
+              : "text-gray-400 hover:text-white"
+          }`}
+        >
+          <div class="flex items-center">
+            <span class="mr-2"
+              ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="icon icon-tabler icons-tabler-outline icon-tabler-align-box-center-top"
+                ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
+                  d="M3 19v-14a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v14a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2"></path><path
+                  d="M11 13h2"></path><path d="M9 10h6"></path><path d="M10 7h4"></path></svg
+              ></span
+            >Ver Planilla
+          </div>
+        </a>
+        <a
+          href="/obra_sociales/create"
+          class={`block px-4 py-2.5 rounded-lg hover:bg-orange-500/10 transition-all text-sm ${
+            currentPath === "/asistencias/registrar"
+              ? "bg-orange-500/20 text-orange-500 font-medium"
+              : "text-gray-400 hover:text-white"
+          }`}
+        >
+          <div class="flex items-center">
+            <span class="mr-2"
+              ><svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="icon icon-tabler icons-tabler-outline icon-tabler-plus"
+                ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 5l0 14"></path><path
+                  d="M5 12l14 0"></path></svg
+              ></span
+            >Crear Obra Social
+          </div>
+        </a>
+      </div>
+    </div>
     <!-- Pagos (con sub-menú) -->
     <div class="menu-item">
       <button
@@ -353,104 +537,6 @@ const currentPath = Astro.url.pathname;
                   d="M9 12l2 2l4 -4"></path></svg
               ></span
             >Registrar entrada
-          </div>
-        </a>
-      </div>
-    </div>
-
-    <!-- Divisor -->
-    <div class="py-3">
-      <div class="h-px bg-gradient-to-r from-transparent via-orange-500/50 to-transparent"></div>
-    </div>
-
-    <!-- Configuración (con sub-menú) -->
-    <div class="menu-item">
-      <button
-        class={`group flex items-center justify-between w-full px-4 py-3 rounded-xl hover:bg-orange-500/10 transition-all duration-200 ${
-          currentPath.startsWith("/planes") || currentPath.startsWith("/obra-sociales")
-            ? "bg-orange-500/20 text-orange-500 border border-orange-500/50"
-            : "text-gray-300 hover:text-white"
-        }`}
-        data-menu="configuracion"
-      >
-        <span class="flex items-center gap-3">
-          <span class="text-xl"
-            ><svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              class="icon icon-tabler icons-tabler-outline icon-tabler-settings"
-              ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
-                d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065"
-              ></path><path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0"></path></svg
-            ></span
-          >
-          <span class="font-medium">Configuración</span>
-        </span>
-        <span class="chevron transition-transform duration-300 text-xs">▼</span>
-      </button>
-      <div class="submenu hidden pl-12 pr-3 mt-1 space-y-1">
-        <a
-          href="/planes"
-          class={`block px-4 py-2.5 rounded-lg hover:bg-orange-500/10 transition-all text-sm ${
-            currentPath === "/planes"
-              ? "bg-orange-500/20 text-orange-500 font-medium"
-              : "text-gray-400 hover:text-white"
-          }`}
-        >
-          <div class="flex">
-            <span class="mr-2"
-              ><svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="icon icon-tabler icons-tabler-outline icon-tabler-credit-card"
-                ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path
-                  d="M3 8a3 3 0 0 1 3 -3h12a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-12a3 3 0 0 1 -3 -3l0 -8"></path><path
-                  d="M3 10l18 0"></path><path d="M7 15l.01 0"></path><path d="M11 15l2 0"></path></svg
-              ></span
-            >Planes
-          </div>
-        </a>
-        <a
-          href="/obra-sociales"
-          class={`block px-4 py-2.5 rounded-lg hover:bg-orange-500/10 transition-all text-sm ${
-            currentPath === "/obra-sociales"
-              ? "bg-orange-500/20 text-orange-500 font-medium"
-              : "text-gray-400 hover:text-white"
-          }`}
-        >
-          <div class="flex">
-            <span class="mr-2"
-              ><svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="icon icon-tabler icons-tabler-outline icon-tabler-building-hospital"
-                ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M3 21l18 0"></path><path
-                  d="M5 21v-16a2 2 0 0 1 2 -2h10a2 2 0 0 1 2 2v16"></path><path
-                  d="M9 21v-4a2 2 0 0 1 2 -2h2a2 2 0 0 1 2 2v4"></path><path d="M10 9l4 0"></path><path d="M12 7l0 4"
-                ></path></svg
-              ></span
-            >Obras Sociales
           </div>
         </a>
       </div>
