@@ -1,0 +1,166 @@
+---
+// src/pages/asistencias/index.astro
+import Layout from "../../layouts/Layout.astro";
+import { asistenciaService } from "../../../src/services/asistenciaService";
+import { formatInTimeZone } from "date-fns-tz";
+
+// Obtener parámetros de búsqueda
+const url = Astro.url;
+const fecha = url.searchParams.get("fecha");
+const nombre = url.searchParams.get("nombre");
+
+// Filtrar según parámetros
+let asistencias;
+if (fecha) {
+  asistencias = await asistenciaService.getByDate(fecha);
+} else if (nombre) {
+  asistencias = await asistenciaService.getByName(nombre);
+} else {
+  asistencias = await asistenciaService.getAll();
+}
+
+const formatearFecha = (fecha: any) => {
+  return formatInTimeZone(new Date(fecha), "America/Argentina/Buenos_Aires", "dd/MM/yyyy");
+};
+
+const formatearHora = (fecha: any) => {
+  return formatInTimeZone(new Date(fecha), "America/Argentina/Buenos_aires", "HH:mm:ss");
+};
+---
+
+<Layout title="Planilla de Asistencias">
+  <div class="max-w-6xl mx-auto px-4">
+    <div class="bg-[#1a1a1a] border border-white/5 rounded-2xl overflow-hidden shadow-xl">
+      <div class="overflow-x-auto">
+        <div class="mb-6 bg-[#1a1a1a] border border-white/5 rounded-2xl p-6">
+          <div class="grid grid-cols-2 gap-4">
+            <!-- Buscar por fecha -->
+            <div class="flex flex-col gap-2">
+              <label class="text-sm text-gray-400 font-medium">Buscar por fecha</label>
+              <div class="flex gap-2">
+                <input
+                  type="date"
+                  id="search-fecha"
+                  class="flex-1 bg-[#0f0f0f] border border-white/10 rounded-xl px-4 py-2 text-white focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all text-sm"
+                />
+                <button
+                  id="btn-buscar-fecha"
+                  class="px-6 py-2 bg-orange-500 hover:bg-orange-400 text-white rounded-xl font-semibold text-sm transition-all"
+                >
+                  Buscar
+                </button>
+              </div>
+            </div>
+
+            <!-- Buscar por nombre -->
+            <div class="flex flex-col gap-2">
+              <label class="text-sm text-gray-400 font-medium">Buscar por nombre</label>
+              <div class="flex gap-2">
+                <input
+                  type="text"
+                  id="search-nombre"
+                  placeholder="Nombre o apellido..."
+                  class="flex-1 bg-[#0f0f0f] border border-white/10 rounded-xl px-4 py-2 text-white placeholder-gray-600 focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all text-sm"
+                />
+                <button
+                  id="btn-buscar-nombre"
+                  class="px-6 py-2 bg-orange-500 hover:bg-orange-400 text-white rounded-xl font-semibold text-sm transition-all"
+                >
+                  Buscar
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Botón limpiar filtros -->
+          <div class="mt-4 flex justify-end">
+            <button id="btn-limpiar" class="px-4 py-2 text-gray-400 hover:text-white text-sm transition-colors">
+              Limpiar filtros
+            </button>
+          </div>
+        </div>
+        <table class="w-full text-left border-collapse">
+          <thead>
+            <tr class="bg-white/[0.02] border-b border-white/5 text-gray-400 text-xs uppercase tracking-widest">
+              <th class="px-6 py-4 font-semibold">#</th>
+              <th class="px-6 py-4 font-semibold">Socio</th>
+              <th class="px-6 py-4 font-semibold text-center">Fecha</th>
+              <th class="px-6 py-4 font-semibold text-center">Hora de Entrada</th>
+              <th class="px-6 py-4 font-semibold"></th>
+            </tr>
+          </thead>
+          <tbody id="asistencias-table-body" class="divide-y divide-white/5">
+            {
+              // 2. MAP SOBRE LA VARIABLE 'asistencias', NO SOBRE EL SERVICIO
+              asistencias.map((item, index) => (
+                <tr class="hover:bg-white/[0.01] transition-colors group">
+                  <td class="px-6 py-4 text-gray-500 text-sm">{index + 1}</td>
+                  <td class="px-6 py-4">
+                    <div class="flex flex-col">
+                      <span class="text-white font-medium">
+                        {item.socios?.nombre} {item.socios?.apellido}
+                      </span>
+                      <span class="text-[11px] text-gray-500">DNI: {item.socios?.dni}</span>
+                    </div>
+                  </td>
+                  <td class="px-6 py-4 text-center">
+                    <span class="px-3 py-1 bg-zinc-800 text-zinc-300 rounded-lg text-xs border border-white/5">
+                      {formatearFecha(item.fecha)}
+                    </span>
+                  </td>
+                  <td class="px-6 py-4 text-center text-orange-400 font-mono font-medium">
+                    {formatearHora(item.hora)}
+                  </td>
+                  <td class="px-6 py-4 text-right" />
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+
+      {
+        asistencias.length === 0 && (
+          <div class="py-12 text-center text-gray-500">No hay registros de asistencia para mostrar.</div>
+        )
+      }
+    </div>
+  </div>
+  <script>
+    const btnBuscarFecha = document.getElementById("btn-buscar-fecha");
+    const btnBuscarNombre = document.getElementById("btn-buscar-nombre");
+    const btnLimpiar = document.getElementById("btn-limpiar");
+    const inputFecha = document.getElementById("search-fecha") as HTMLInputElement;
+    const inputNombre = document.getElementById("search-nombre") as HTMLInputElement;
+
+    // Buscar por fecha
+    btnBuscarFecha?.addEventListener("click", async () => {
+      const fecha = inputFecha.value;
+      if (!fecha) return;
+
+      window.location.href = `/asistencias?fecha=${fecha}`;
+    });
+
+    // Buscar por nombre
+    btnBuscarNombre?.addEventListener("click", async () => {
+      const nombre = inputNombre.value.trim();
+      if (!nombre) return;
+
+      window.location.href = `/asistencias?nombre=${nombre}`;
+    });
+
+    // Limpiar filtros
+    btnLimpiar?.addEventListener("click", () => {
+      window.location.href = "/asistencias";
+    });
+
+    // Enter en los inputs
+    inputFecha?.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") btnBuscarFecha?.click();
+    });
+
+    inputNombre?.addEventListener("keypress", (e) => {
+      if (e.key === "Enter") btnBuscarNombre?.click();
+    });
+  </script>
+</Layout>

@@ -11,6 +11,14 @@ export const asistenciaService = {
       },
     });
   },
+  async getAll() {
+    return await db.asistencias.findMany({
+      orderBy: { fecha: "desc" },
+      include: {
+        socios: true,
+      },
+    });
+  },
   async getByDate(fechaStr: string) {
     const fechaBuscada = new Date(fechaStr);
     return await db.asistencias.findMany({
