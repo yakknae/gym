@@ -1,0 +1,322 @@
+---
+// src/pages/index.astro
+import Layout from "../layouts/Layout.astro";
+import { db } from "../lib/db";
+
+// Métricas del dashboard
+const totalSocios = await db.socios.count();
+const sociosActivos = await db.socios.count({ where: { estado: "Activo" } });
+const totalPlanes = await db.planes.count();
+
+// Asistencias de hoy
+const hoy = new Date().toISOString().split("T")[0];
+const asistenciasHoy = await db.asistencias.count({
+  where: {
+    fecha: new Date(hoy),
+  },
+});
+
+// Últimas asistencias (top 5)
+const ultimasAsistencias = await db.asistencias.findMany({
+  take: 5,
+  orderBy: { fecha: "desc" },
+  include: {
+    socios: true,
+  },
+});
+
+// Socios por plan
+const sociosPorPlan = await db.socios.groupBy({
+  by: ["id_plan"],
+  _count: {
+    id_socio: true,
+  },
+});
+
+const planesConNombres = await Promise.all(
+  sociosPorPlan.map(async (item) => {
+    const plan = await db.planes.findUnique({
+      where: { id_plan: item.id_plan || 0 },
+    });
+    return {
+      nombre: plan?.nombre_plan || "Sin plan",
+      cantidad: item._count.id_socio,
+    };
+  }),
+);
+---
+
+<Layout title="Dashboard">
+  <!-- Hero Section -->
+  <div class="mb-8">
+    <h1 class="text-4xl font-black text-white mb-2 tracking-tight">
+      Bienvenido a <span class="text-orange-500">Atenas Gym</span>
+    </h1>
+    <p class="text-gray-400 text-lg">Panel de control y métricas en tiempo real</p>
+  </div>
+
+  <!-- Stats Cards Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <!-- Card: Total Socios -->
+    <div
+      class="group relative overflow-hidden bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f] border border-white/5 rounded-2xl p-6 hover:border-orange-500/30 transition-all duration-300"
+    >
+      <div
+        class="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-full blur-3xl group-hover:bg-orange-500/10 transition-all"
+      >
+      </div>
+      <div class="relative">
+        <div class="flex items-center justify-between mb-4">
+          <div class="p-3 bg-orange-500/10 rounded-xl">
+            <svg class="w-6 h-6 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+              ></path>
+            </svg>
+          </div>
+        </div>
+        <h3 class="text-gray-400 text-sm font-medium mb-1">Total Socios</h3>
+        <p class="text-4xl font-black text-white">{totalSocios}</p>
+      </div>
+    </div>
+
+    <!-- Card: Socios Activos -->
+    <div
+      class="group relative overflow-hidden bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f] border border-white/5 rounded-2xl p-6 hover:border-orange-500/30 transition-all duration-300"
+    >
+      <div
+        class="absolute top-0 right-0 w-32 h-32 bg-green-500/5 rounded-full blur-3xl group-hover:bg-green-500/10 transition-all"
+      >
+      </div>
+      <div class="relative">
+        <div class="flex items-center justify-between mb-4">
+          <div class="p-3 bg-green-500/10 rounded-xl">
+            <svg class="w-6 h-6 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+          <span class="text-xs font-medium text-gray-500">{Math.round((sociosActivos / totalSocios) * 100)}%</span>
+        </div>
+        <h3 class="text-gray-400 text-sm font-medium mb-1">Activos</h3>
+        <p class="text-4xl font-black text-white">{sociosActivos}</p>
+      </div>
+    </div>
+
+    <!-- Card: Asistencias Hoy -->
+    <div
+      class="group relative overflow-hidden bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f] border border-white/5 rounded-2xl p-6 hover:border-orange-500/30 transition-all duration-300"
+    >
+      <div
+        class="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-500/10 transition-all"
+      >
+      </div>
+      <div class="relative">
+        <div class="flex items-center justify-between mb-4">
+          <div class="p-3 bg-blue-500/10 rounded-xl">
+            <svg class="w-6 h-6 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+              ></path>
+            </svg>
+          </div>
+          <span class="text-xs font-semibold text-blue-400 bg-blue-500/10 px-2 py-1 rounded-full">Hoy</span>
+        </div>
+        <h3 class="text-gray-400 text-sm font-medium mb-1">Asistencias</h3>
+        <p class="text-4xl font-black text-white">{asistenciasHoy}</p>
+      </div>
+    </div>
+
+    <!-- Card: Planes Disponibles -->
+    <div
+      class="group relative overflow-hidden bg-gradient-to-br from-[#1a1a1a] to-[#0f0f0f] border border-white/5 rounded-2xl p-6 hover:border-orange-500/30 transition-all duration-300"
+    >
+      <div
+        class="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-full blur-3xl group-hover:bg-purple-500/10 transition-all"
+      >
+      </div>
+      <div class="relative">
+        <div class="flex items-center justify-between mb-4">
+          <div class="p-3 bg-purple-500/10 rounded-xl">
+            <svg class="w-6 h-6 text-purple-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+              ></path>
+            </svg>
+          </div>
+        </div>
+        <h3 class="text-gray-400 text-sm font-medium mb-1">Planes</h3>
+        <p class="text-4xl font-black text-white">{totalPlanes}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Two Column Layout -->
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <!-- Left Column: Distribución de Planes -->
+    <div class="lg:col-span-2">
+      <div class="bg-[#1a1a1a] border border-white/5 rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-bold text-white">Distribución por Plan</h2>
+          <span class="text-xs text-gray-500 bg-white/5 px-3 py-1 rounded-full">En tiempo real</span>
+        </div>
+
+        <div class="space-y-4">
+          {
+            planesConNombres.map((plan, index) => {
+              const porcentaje = (plan.cantidad / totalSocios) * 100;
+              const colores = ["bg-orange-500", "bg-blue-500", "bg-green-500", "bg-purple-500", "bg-pink-500"];
+              const color = colores[index % colores.length];
+
+              return (
+                <div class="group">
+                  <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-medium text-gray-300">{plan.nombre}</span>
+                    <span class="text-sm font-bold text-white">{plan.cantidad} socios</span>
+                  </div>
+                  <div class="relative h-3 bg-white/5 rounded-full overflow-hidden">
+                    <div
+                      class={`absolute top-0 left-0 h-full ${color} rounded-full transition-all duration-1000 ease-out group-hover:opacity-80`}
+                      style={`width: ${porcentaje}%; animation: slideIn 1s ease-out;`}
+                    />
+                  </div>
+                  <div class="flex justify-between mt-1">
+                    <span class="text-xs text-gray-500">{porcentaje.toFixed(1)}%</span>
+                  </div>
+                </div>
+              );
+            })
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Column: Últimas Asistencias -->
+    <div class="lg:col-span-1">
+      <div class="bg-[#1a1a1a] border border-white/5 rounded-2xl p-6">
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-xl font-bold text-white">Actividad Reciente</h2>
+          <a href="/asistencias" class="text-xs text-orange-400 hover:text-orange-300 transition-colors">
+            Ver todo →
+          </a>
+        </div>
+
+        <div class="space-y-4">
+          {
+            ultimasAsistencias.length === 0 ? (
+              <p class="text-sm text-gray-500 text-center py-8">No hay asistencias registradas</p>
+            ) : (
+              ultimasAsistencias.map((asistencia) => (
+                <div class="flex items-start gap-3 p-3 rounded-xl hover:bg-white/5 transition-colors">
+                  <div class="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                    {asistencia.socios?.nombre.charAt(0)}
+                    {asistencia.socios?.apellido.charAt(0)}
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-white truncate">
+                      {asistencia.socios?.nombre} {asistencia.socios?.apellido}
+                    </p>
+                    <p class="text-xs text-gray-500 mt-0.5">{asistencia.hora || "Sin hora"}</p>
+                  </div>
+                </div>
+              ))
+            )
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Actions -->
+  <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+    <a
+      href="/socios/create"
+      class="group flex items-center gap-4 bg-gradient-to-r from-orange-500/10 to-orange-600/5 border border-orange-500/20 rounded-xl p-4 hover:border-orange-500/40 transition-all"
+    >
+      <div class="p-3 bg-orange-500/20 rounded-lg group-hover:scale-110 transition-transform">
+        <svg class="w-5 h-5 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+        </svg>
+      </div>
+      <div>
+        <p class="text-sm font-semibold text-white">Nuevo Socio</p>
+        <p class="text-xs text-gray-400">Registrar miembro</p>
+      </div>
+    </a>
+
+    <a
+      href="/asistencias/create"
+      class="group flex items-center gap-4 bg-gradient-to-r from-blue-500/10 to-blue-600/5 border border-blue-500/20 rounded-xl p-4 hover:border-blue-500/40 transition-all"
+    >
+      <div class="p-3 bg-blue-500/20 rounded-lg group-hover:scale-110 transition-transform">
+        <svg class="w-5 h-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+          ></path>
+        </svg>
+      </div>
+      <div>
+        <p class="text-sm font-semibold text-white">Registrar Asistencia</p>
+        <p class="text-xs text-gray-400">Marcar entrada</p>
+      </div>
+    </a>
+
+    <a
+      href="/socios"
+      class="group flex items-center gap-4 bg-gradient-to-r from-green-500/10 to-green-600/5 border border-green-500/20 rounded-xl p-4 hover:border-green-500/40 transition-all"
+    >
+      <div class="p-3 bg-green-500/20 rounded-lg group-hover:scale-110 transition-transform">
+        <svg class="w-5 h-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+          ></path>
+        </svg>
+      </div>
+      <div>
+        <p class="text-sm font-semibold text-white">Ver Socios</p>
+        <p class="text-xs text-gray-400">Lista completa</p>
+      </div>
+    </a>
+  </div>
+
+  <style>
+    @keyframes slideIn {
+      from {
+        width: 0;
+      }
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .group:hover .group-hover\:scale-110 {
+      transform: scale(1.1);
+    }
+  </style>
+</Layout>

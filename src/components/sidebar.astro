@@ -1,6 +1,7 @@
 ---
 // src/components/Sidebar.astro
 const currentPath = Astro.url.pathname;
+const username = Astro.cookies.get("username")?.value || "Usuario";
 ---
 
 <aside
@@ -25,9 +26,9 @@ const currentPath = Astro.url.pathname;
   <nav class="flex-1 px-3 py-6 space-y-1">
     <!-- Dashboard -->
     <a
-      href="/dashboard"
+      href="/"
       class={`group flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-orange-500/10 transition-all duration-200 ${
-        currentPath === "/dashboard"
+        currentPath === "/"
           ? "bg-orange-500/20 text-orange-500 border border-orange-500/50"
           : "text-gray-300 hover:text-white"
       }`}
@@ -552,12 +553,13 @@ const currentPath = Astro.url.pathname;
         >
           V
         </div>
+
         <div class="">
-          <p class="text-white text-[14px] font-medium">Valentino</p>
+          <p class="text-white text-[14px] font-medium">{username}</p>
           <p class="text-gray-500 text-[10px]">Administrador</p>
         </div>
       </div>
-      <button class="text-gray-500 hover:text-orange-500 transition-colors" title="Cerrar sesión">
+      <button id="btn-logout" class="text-gray-500 hover:text-orange-500 transition-colors" title="Cerrar sesión">
         <span class="text-lg"
           ><svg
             xmlns="http://www.w3.org/2000/svg"
@@ -584,6 +586,11 @@ const currentPath = Astro.url.pathname;
   document.addEventListener("DOMContentLoaded", () => {
     const menuButtons = document.querySelectorAll("[data-menu]");
 
+    const btnLogout = document.getElementById("btn-logout");
+    btnLogout?.addEventListener("click", async () => {
+      await fetch("/api/auth/logout", { method: "POST" });
+      window.location.href = "/login";
+    });
     menuButtons.forEach((button) => {
       const menuItem = button.closest(".menu-item");
       const submenu = menuItem?.querySelector(".submenu");
