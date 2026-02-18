@@ -1,0 +1,160 @@
+---
+// src/pages/planes/edit/[id].astro
+import Layout from "../../../layouts/Layout.astro";
+import { planService } from "../../../services/planService";
+
+const { id } = Astro.params;
+
+if (!id) {
+  return Astro.redirect("/planes");
+}
+
+const plan = await planService.getById(Number(id));
+
+if (!plan) {
+  return Astro.redirect("/planes");
+}
+---
+
+<Layout title="Editar Plan">
+  <div class="max-w-4xl mx-auto">
+    <!-- Header de la sección -->
+    <div class="mb-8">
+      <div class="flex items-center gap-3 mb-1">
+        <a
+          href="/planes"
+          class="text-gray-500 hover:text-orange-400 transition-colors text-sm flex items-center gap-1.5"
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+          Planes
+        </a>
+        <span class="text-gray-600">/</span>
+        <span class="text-gray-400 text-sm">Editar plan</span>
+      </div>
+      <h1 class="text-3xl font-bold text-white">Editar Plan</h1>
+      <p class="text-gray-400 mt-1">Modificá los datos de {plan.nombre_plan}</p>
+    </div>
+
+    <!-- Formulario -->
+    <form id="form-editar" class="space-y-6">
+      <!-- Sección: Datos del plan -->
+      <div class="bg-[#1a1a1a] border border-white/5 rounded-2xl p-6">
+        <h2 class="text-sm font-semibold text-orange-400 uppercase tracking-widest mb-5">Datos del plan</h2>
+
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Nombre -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm text-gray-400 font-medium">Nombre <span class="text-orange-500">*</span></label>
+            <input
+              type="text"
+              name="nombre_plan"
+              required
+              value={plan.nombre_plan}
+              placeholder="Ej: Deluxe"
+              class="bg-[#0f0f0f] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all text-sm"
+            />
+          </div>
+
+          <!-- Días -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm text-gray-400 font-medium">Días <span class="text-orange-500">*</span></label>
+            <input
+              type="number"
+              name="dias"
+              required
+              value={plan.dias}
+              placeholder="Ej: 1 - 3 - libre"
+              class="bg-[#0f0f0f] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all text-sm"
+            />
+          </div>
+
+          <!-- Descripción -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm text-gray-400 font-medium">Descripción</label>
+            <input
+              type="text"
+              name="descripcion"
+              value={plan.descripcion || ""}
+              placeholder="Ej: plan para..."
+              class="bg-[#0f0f0f] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all text-sm"
+            />
+          </div>
+
+          <!-- Precio -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm text-gray-400 font-medium">Precio <span class="text-orange-500">*</span></label>
+            <input
+              type="number"
+              name="precio"
+              required
+              value={plan.precio}
+              placeholder="Ej: 150000"
+              class="bg-[#0f0f0f] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all text-sm"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones -->
+      <div class="flex justify-end gap-3 pb-4">
+        <a
+          href="/planes"
+          class="px-6 py-3 rounded-xl border border-white/10 text-gray-400 hover:text-white hover:border-white/20 transition-all text-sm font-medium"
+        >
+          Cancelar
+        </a>
+        <button
+          type="submit"
+          class="px-8 py-3 bg-orange-500 hover:bg-orange-400 text-white rounded-xl font-semibold text-sm transition-all shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30 active:scale-95"
+        >
+          Guardar Cambios
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <style>
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+    }
+  </style>
+
+  <script define:vars={{ planId: id }}>
+    const form = document.getElementById("form-editar");
+
+    form?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const formData = new FormData(form);
+      const raw = Object.fromEntries(formData.entries());
+
+      // Convertir números
+      const data = {
+        ...raw,
+        dias: raw.dias ? Number(raw.dias) : null,
+        precio: raw.precio ? Number(raw.precio) : null,
+      };
+
+      const res = await fetch(`/api/planes/${planId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (res.ok) {
+        window.location.href = "/planes";
+      } else {
+        const err = await res.json();
+        alert(err.error || "Error al actualizar el plan");
+      }
+    });
+  </script>
+</Layout>

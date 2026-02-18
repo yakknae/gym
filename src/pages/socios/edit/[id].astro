@@ -1,0 +1,296 @@
+---
+// src/pages/socios/edit/[id].astro
+import Layout from "../../../layouts/Layout.astro";
+import { db } from "../../../lib/db";
+import { socioService } from "../../../services/socioService";
+
+const { id } = Astro.params;
+
+if (!id) {
+  return Astro.redirect("/socios");
+}
+
+const socio = await socioService.getById(Number(id));
+
+if (!socio) {
+  return Astro.redirect("/socios");
+}
+
+const planes = await db.planes.findMany();
+const planesSociales = await db.planes_sociales.findMany();
+
+// Formatear fechas para inputs type="date" (YYYY-MM-DD)
+const formatDate = (date: Date | null) => {
+  if (!date) return "";
+  return new Date(date).toISOString().split("T")[0];
+};
+---
+
+<Layout title="Editar Socio">
+  <div class="max-w-4xl mx-auto">
+    <!-- Header de la sección -->
+    <div class="mb-8">
+      <div class="flex items-center gap-3 mb-1">
+        <a
+          href="/socios"
+          class="text-gray-500 hover:text-orange-400 transition-colors text-sm flex items-center gap-1.5"
+        >
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+          Socios
+        </a>
+        <span class="text-gray-600">/</span>
+        <span class="text-gray-400 text-sm">Editar socio</span>
+      </div>
+      <h1 class="text-3xl font-bold text-white">Editar Socio</h1>
+      <p class="text-gray-400 mt-1">Modificá los datos de {socio.nombre} {socio.apellido}</p>
+    </div>
+
+    <!-- Formulario -->
+    <form id="form-editar" class="space-y-6">
+      <!-- Sección: Datos personales -->
+      <div class="bg-[#1a1a1a] border border-white/5 rounded-2xl p-6">
+        <h2 class="text-sm font-semibold text-orange-400 uppercase tracking-widest mb-5">Datos Personales</h2>
+
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Nombre -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm text-gray-400 font-medium">Nombre <span class="text-orange-500">*</span></label>
+            <input
+              type="text"
+              name="nombre"
+              required
+              value={socio.nombre}
+              placeholder="Ej: Juan"
+              class="bg-[#0f0f0f] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all text-sm"
+            />
+          </div>
+
+          <!-- Apellido -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm text-gray-400 font-medium">Apellido <span class="text-orange-500">*</span></label>
+            <input
+              type="text"
+              name="apellido"
+              required
+              value={socio.apellido}
+              placeholder="Ej: Pérez"
+              class="bg-[#0f0f0f] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all text-sm"
+            />
+          </div>
+
+          <!-- DNI -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm text-gray-400 font-medium">DNI <span class="text-orange-500">*</span></label>
+            <input
+              type="number"
+              name="dni"
+              required
+              value={socio.dni}
+              placeholder="Ej: 12345678"
+              class="bg-[#0f0f0f] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all text-sm"
+            />
+          </div>
+
+          <!-- Género -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm text-gray-400 font-medium">Género</label>
+            <select
+              name="genero"
+              class="bg-[#0f0f0f] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all text-sm appearance-none cursor-pointer"
+            >
+              <option value="" selected={!socio.genero}>Seleccionar...</option>
+              <option value="Masculino" selected={socio.genero === "Masculino"}>Masculino</option>
+              <option value="Femenino" selected={socio.genero === "Femenino"}>Femenino</option>
+              <option value="Otro" selected={socio.genero === "Otro"}>Otro</option>
+            </select>
+          </div>
+
+          <!-- Fecha de nacimiento -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm text-gray-400 font-medium">Fecha de nacimiento</label>
+            <input
+              type="date"
+              name="fecha_nacimiento"
+              value={formatDate(socio.fecha_nacimiento)}
+              class="bg-[#0f0f0f] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all text-sm"
+            />
+          </div>
+
+          <!-- Fecha de ingreso -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm text-gray-400 font-medium"
+              >Fecha de ingreso <span class="text-orange-500">*</span></label
+            >
+            <input
+              type="date"
+              name="fecha_ingreso"
+              required
+              value={formatDate(socio.fecha_ingreso)}
+              class="bg-[#0f0f0f] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all text-sm"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección: Contacto -->
+      <div class="bg-[#1a1a1a] border border-white/5 rounded-2xl p-6">
+        <h2 class="text-sm font-semibold text-orange-400 uppercase tracking-widest mb-5">Contacto</h2>
+
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Email -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm text-gray-400 font-medium">Email</label>
+            <input
+              type="email"
+              name="email"
+              value={socio.email || ""}
+              placeholder="juan@example.com"
+              class="bg-[#0f0f0f] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all text-sm"
+            />
+          </div>
+
+          <!-- Teléfono -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm text-gray-400 font-medium">Teléfono</label>
+            <input
+              type="tel"
+              name="telefono"
+              value={socio.telefono || ""}
+              placeholder="Ej: 11 1234-5678"
+              class="bg-[#0f0f0f] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all text-sm"
+            />
+          </div>
+
+          <!-- Dirección (ocupa todo el ancho) -->
+          <div class="flex flex-col gap-1.5 col-span-2">
+            <label class="text-sm text-gray-400 font-medium">Dirección</label>
+            <input
+              type="text"
+              name="direccion"
+              value={socio.direccion || ""}
+              placeholder="Ej: Av. Corrientes 1234, CABA"
+              class="bg-[#0f0f0f] border border-white/10 rounded-xl px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all text-sm"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Sección: Plan y Estado -->
+      <div class="bg-[#1a1a1a] border border-white/5 rounded-2xl p-6">
+        <h2 class="text-sm font-semibold text-orange-400 uppercase tracking-widest mb-5">Plan y Estado</h2>
+
+        <div class="grid grid-cols-2 gap-4">
+          <!-- Plan -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm text-gray-400 font-medium">Plan <span class="text-orange-500">*</span></label>
+            <select
+              name="id_plan"
+              required
+              class="bg-[#0f0f0f] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all text-sm appearance-none cursor-pointer"
+            >
+              <option value="">Seleccionar plan...</option>
+              {
+                planes.map((plan: any) => (
+                  <option value={plan.id_plan} selected={socio.id_plan === plan.id_plan}>
+                    {plan.nombre_plan}
+                  </option>
+                ))
+              }
+            </select>
+          </div>
+
+          <!-- Obra social -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm text-gray-400 font-medium">Obra Social </label>
+            <select
+              name="id_plan_social"
+              class="bg-[#0f0f0f] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all text-sm appearance-none cursor-pointer"
+            >
+              <option value="" selected={!socio.id_plan_social}>Sin plan social</option>
+              {
+                planesSociales.map((ps: any) => (
+                  <option value={ps.id_plan_social} selected={socio.id_plan_social === ps.id_plan_social}>
+                    {ps.nombre_plan_social}
+                  </option>
+                ))
+              }
+            </select>
+          </div>
+
+          <!-- Estado -->
+          <div class="flex flex-col gap-1.5">
+            <label class="text-sm text-gray-400 font-medium">Estado</label>
+            <select
+              name="estado"
+              class="bg-[#0f0f0f] border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-orange-500/50 focus:ring-1 focus:ring-orange-500/20 transition-all text-sm appearance-none cursor-pointer"
+            >
+              <option value="Activo" selected={socio.estado === "Activo"}>Activo</option>
+              <option value="Inactivo" selected={socio.estado === "Inactivo"}>Inactivo</option>
+              <option value="Suspendido" selected={socio.estado === "Suspendido"}>Suspendido</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Botones -->
+      <div class="flex justify-end gap-3 pb-4">
+        <a
+          href="/socios"
+          class="px-6 py-3 rounded-xl border border-white/10 text-gray-400 hover:text-white hover:border-white/20 transition-all text-sm font-medium"
+        >
+          Cancelar
+        </a>
+        <button
+          type="submit"
+          class="px-8 py-3 bg-orange-500 hover:bg-orange-400 text-white rounded-xl font-semibold text-sm transition-all shadow-lg shadow-orange-500/20 hover:shadow-orange-500/30 active:scale-95"
+        >
+          Guardar Cambios
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <style>
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      filter: invert(0.5);
+      cursor: pointer;
+    }
+
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+    }
+  </style>
+
+  <script define:vars={{ socioId: id }}>
+    const form = document.getElementById("form-editar");
+
+    form?.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      // Validación manual
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+
+      const res = await fetch(`/api/socios/${socioId}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (res.ok) {
+        window.location.href = "/socios";
+      } else {
+        const err = await res.json();
+        alert(err.error || "Error al actualizar el socio");
+      }
+    });
+  </script>
+</Layout>

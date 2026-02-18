@@ -21,7 +21,7 @@ export const planService = {
   // =================================================================
   // 5. get by id
   // =================================================================
-  async getByid(id: number) {
+  async getById(id: number) {
     return await db.planes.findUnique({
       where: { id_plan: id },
     });
