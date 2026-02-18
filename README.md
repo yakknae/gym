@@ -10,9 +10,9 @@
 
 ## Vista Previa
 
-|          Iniciar Sesión          |                Dashboard                 |
-| :------------------------------: | :--------------------------------------: |
-| ![Login](/public/docs/login.png) | ![Dashboard](/public/docs/dashboard.png) |
+|              Planilla               |                Dashboard                 |
+| :---------------------------------: | :--------------------------------------: |
+| ![Login](/public/docs/planilla.png) | ![Dashboard](/public/docs/dashboard.png) |
 
 ### 🎥 Demo en Funcionamiento
 
@@ -48,5 +48,5 @@
 Para que el proyecto se conecte correctamente a la base de datos es necesario crear un archivo .env en la raíz del proyecto.
 
 ```bash
-DATABASE_URL=""mysql://user:password@localhost:port/db_name""
+DATABASE_URL="mysql://user:password@localhost:port/db_name"
 ```
