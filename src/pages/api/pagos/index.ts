@@ -1,35 +1,29 @@
 import type { APIRoute } from "astro";
 import { pagoService } from "../../../services/pagoService";
 
-export const GET: APIRoute = async ({ url }) => {
-  const inicioParam = url.searchParams.get("inicio");
-  const finParam = url.searchParams.get("fin");
-
-  // 1. Validación de presencia
-  if (!inicioParam || !finParam) {
-    return new Response(JSON.stringify({ error: "Faltan las fechas de inicio y fin" }), {
-      status: 400,
-      headers: { "Content-Type": "application/json" },
-    });
-  }
-
-  // 2. Validación de formato de fecha
-  const inicio = new Date(inicioParam);
-  const fin = new Date(finParam);
-
-  if (isNaN(inicio.getTime()) || isNaN(fin.getTime())) {
-    return new Response(JSON.stringify({ error: "Formato de fecha inválido. Usar YYYY-MM-DD" }), {
-      status: 400,
-    });
-  }
-
+export const POST: APIRoute = async () => {
   try {
-    const pendientes = await pagoService.getPagosPendientes(inicio, fin);
-    return new Response(JSON.stringify(pendientes), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
-  } catch (e: any) {
-    return new Response(JSON.stringify({ error: e.message }), { status: 500 });
+    const resultado = await pagoService.generarPagosMesActualParaTodos();
+
+    let mensaje = "";
+    if (resultado.generados === 0) {
+      mensaje = `No se generaron pagos nuevos. Los ${resultado.total} socios activos ya tienen su pago del mes actual.`;
+    } else if (resultado.generados === resultado.total) {
+      mensaje = `Se generaron ${resultado.generados} pagos nuevos exitosamente.`;
+    } else {
+      mensaje = `Se generaron ${resultado.generados} pagos nuevos. ${resultado.yaExistian} de los socios ya tenían su pago del mes.`;
+    }
+
+    return new Response(
+      JSON.stringify({
+        success: true,
+        message: mensaje,
+        ...resultado,
+      }),
+      { status: 200 },
+    );
+  } catch (error: any) {
+    console.error("Error en generar pagos:", error);
+    return new Response(JSON.stringify({ error: error.message }), { status: 500 });
   }
 };

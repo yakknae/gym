@@ -395,33 +395,6 @@ const username = Astro.cookies.get("username")?.value || "Usuario";
           Ver Planilla
         </a>
         <a
-          href="/pagos/pendientes"
-          class={`block px-4 py-2.5 rounded-lg hover:bg-orange-500/10 transition-all text-sm ${
-            currentPath === "/pagos/pendientes"
-              ? "bg-orange-500/20 text-orange-500 font-medium"
-              : "text-gray-400 hover:text-white"
-          }`}
-        >
-          <div class="flex">
-            <span class="mr-2"
-              ><svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="20"
-                height="20"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="icon icon-tabler icons-tabler-outline icon-tabler-alarm"
-                ><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M5 13a7 7 0 1 0 14 0a7 7 0 1 0 -14 0"
-                ></path><path d="M12 10l0 3l2 0"></path><path d="M7 4l-2.75 2"></path><path d="M17 4l2.75 2"></path>
-              </svg>
-            </span>Pendientes
-          </div>
-        </a>
-        <a
           href="/pagos/historial"
           class={`block px-4 py-2.5 rounded-lg hover:bg-orange-500/10 transition-all text-sm ${
             currentPath === "/pagos/historial"
