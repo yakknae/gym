@@ -14,7 +14,7 @@
 | :---------------------------------: | :--------------------------------------: |
 | ![Login](/public/docs/planilla.png) | ![Dashboard](/public/docs/dashboard.png) |
 
-### 🎥 Demo en Funcionamiento
+### Demo en Funcionamiento
 
 ![Demo Gif](/public/docs/demo.gif)
 
