@@ -29,8 +29,6 @@
 ## Instalación
 
 ```bash
-# Clonar el proyecto
- git clone ...
 
 # Instalar dependencias
  npm install

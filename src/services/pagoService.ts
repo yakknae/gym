@@ -227,11 +227,14 @@ export const pagoService = {
     if (count === 0) {
       const primerDiaMes = new Date(año, mes - 1, 1);
 
+      const fechaProgramada = new Date(primerDiaMes);
+      fechaProgramada.setDate(fechaProgramada.getDate() + 7);
+
       await db.pagos.create({
         data: {
           id_socio: idSocio,
           id_plan: socio.id_plan!,
-          fecha_programada: primerDiaMes,
+          fecha_programada: fechaProgramada,
           mes_correspondiente: primerDiaMes,
           estado_pago: "Pendiente",
         },
